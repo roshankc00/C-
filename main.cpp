@@ -15,6 +15,8 @@ private:
     sf::Sound sound;
     sf::Texture texturemenu;
     sf::Sprite spritemenu;
+  int chanceturn=0;
+  bool isCollide=false;
 
     int n = 0;
     bool showmenu = false;
@@ -61,18 +63,16 @@ public:
     {
         if (sprite.getPosition().y > 230)
         {
-            sprite.move(sf::Vector2f(0, -10));
-            std::cout << "the x postion of the right  sprite is " << spriteenemy.getPosition().x << " " << spriteenemy.getPosition().y << std::endl;
-            std::cout << "the y postion of the left sprite is " << sprite.getPosition().y << std::endl;
+            sprite.move(sf::Vector2f(0, -4));
+          
         }
     }
     void move_right()
     {
         if (sprite.getPosition().y < 490)
         {
-            sprite.move(sf::Vector2f(0, 6));
-            std::cout << "the x postion of the right  sprite is " << spriteenemy.getPosition().x << " " << spriteenemy.getPosition().y << std::endl;
-            std::cout << "the y postion of the sprite right  is " << sprite.getPosition().y << std::endl;
+            sprite.move(sf::Vector2f(0, 4));
+       
         }
     }
     void move_down()
@@ -81,8 +81,7 @@ public:
         {
             sprite.move(sf::Vector2f(-6, 0));
 
-            std::cout << "the x postion of the right  sprite is " << sprite.getPosition().x << std::endl;
-            std::cout << "the y postion of the sprite right  is " << sprite.getPosition().y << std::endl;
+         
         }
     }
 
@@ -110,7 +109,6 @@ public:
         int a = rand() % diff + 230;
         ;
 
-        std::cout << a << std::endl;
 
         // setting up the sprite position
         spriteenemy.setPosition(sf::Vector2f(490, a));
@@ -130,29 +128,23 @@ public:
 
         if (sprite.getGlobalBounds().intersects(spriteenemy.getGlobalBounds()))
         {
-            while (n = 0)
+            while (n == 0)
             {
                 music.pause();
-                if (crash.getStatus() != sf::Music::Status::Playing)
-                {
-
-                    crash.setVolume(100);
-                    crash.play();
-                }
-                crash.setVolume(100);
+                chanceturn++;
+                isCollide=true;
+                std::cout<<chanceturn;               
 
                 std::cout << "game over";
-                count++;
                 n = 1;
-                std::cout << "count" << std::endl;
             }
         }
         else
         {
 
-            std::cout << "the y postion of the sprite right  is "
-                      << "y=" << spriteenemy.getPosition().y << "x= " << spriteenemy.getPosition().x << std::endl;
+         
             spriteenemy.move(sf::Vector2f(-5, 0));
+            isCollide==false;
         }
 
         if (spriteenemy.getPosition().x == -80)
@@ -176,7 +168,7 @@ public:
         texturemenu.setRepeated(true);
 
         // loading the texture
-        if (!texturemenu.loadFromFile("menu2.jpg"))
+        if (!texturemenu.loadFromFile("final.jpg"))
         {
             std::cout << "Error in loading the page " << std::endl;
         }
@@ -205,16 +197,68 @@ public:
     {
         return showmenu;
     }
+
+
+    int return_gameChance(){
+        return chanceturn;
+    }
+
+
+   bool return_isCollide(){
+    return isCollide;
+   }
+
+   void set_isCollideFalse(){
+    isCollide=false;
+   }
+
+
+void setGameChance(){
+        chanceturn=0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    
 };
 
 int Game::count;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main()
 {
     // show or hide the menu
-    bool show = false;
+    int show = 1;
     int score1 = 0;
-
+    int finalscore=0;
+    int chance=0;
+    bool isgameover=false;
     sf::RenderWindow window(sf::VideoMode(600, 600), "Parallax Example",
                             sf::Style::Titlebar | sf::Style::Close);
     window.setVerticalSyncEnabled(true);
@@ -228,7 +272,7 @@ int main()
     g1.setmenu();
     // backgound logic
 
-    //   font
+    //   score board
     sf::Font font;
     font.loadFromFile("Real Delight.ttf");
 
@@ -238,6 +282,60 @@ int main()
     text.setStyle(sf::Text::Bold);
     text.setFillColor(sf::Color::Red);
 
+
+// gamechance logic
+ sf::Font fontchance;
+
+    fontchance.loadFromFile("Real Delight.ttf");
+
+    // Create a text
+    
+    sf::Text textchance(std::to_string(g1.return_gameChance()), fontchance);
+    textchance.setCharacterSize(30);
+    textchance.setStyle(sf::Text::Bold);
+    textchance.setFillColor(sf::Color::Red);
+    textchance.setPosition(sf::Vector2f(800,200));
+
+// background image for the score board 
+ // setting up the texture
+ sf::Texture scorebackground;
+ sf::Sprite scoreBackImage;
+    scorebackground.setRepeated(true);
+
+        // loading the texture
+        if (!scorebackground.loadFromFile("chance.jpg"))
+        {
+            std::cout << "Error in loading the page " << std::endl;
+        }
+        //  spritemenu.setPosition(0, 0);
+        scoreBackImage.setTexture(scorebackground);
+
+
+
+
+
+
+// final score
+  sf::Font finalscorefont;
+    finalscorefont.loadFromFile("Real Delight.ttf");
+
+    // Create a text
+    sf::Text finalscoretext("Play", finalscorefont);
+    finalscoretext.setCharacterSize(30);
+    finalscoretext.setStyle(sf::Text::Bold);
+    finalscoretext.setFillColor(sf::Color::Red);
+    finalscoretext.setPosition(sf::Vector2f{ window.getSize() / 3u });
+
+
+
+
+
+
+
+
+
+
+// background logic
     sf::Texture texture;
     if (!texture.loadFromFile("roooad.png"))
     {
@@ -267,9 +365,32 @@ int main()
     {
         sf::Event event;
         while (window.pollEvent(event))
-            score1++;
+        
+      
+          if(g1.return_isCollide()&& g1.return_gameChance()<3&& show!=3){       
+        show=3;
+            std::cout<<"wow";
+        }
+    if(g1.return_gameChance()>=3){
+        g1.setGameChance();
+        g1.set_isCollideFalse();
+        show=1;
+       
+        
+
+        score1=0;
+
+       
+
+    }
+           sf::Text textchance(std::to_string(g1.return_gameChance())+" time you have collided \n press enter to continue", fontchance);
+
+         
+          g1.return_gameChance()>=3?score1=0:score1++;
         sf::Text text("Score :" + std::to_string(score1), font);
+         
         {
+
             switch (event.type)
             {
             case sf::Event::Closed:
@@ -287,15 +408,29 @@ int main()
                 case sf::Keyboard::Down:
                     g1.move_down();
                     break;
+                case sf::Keyboard::Up:
+                    g1.set_isCollideFalse();
+                    show=2;
+                    isgameover=true;
+                    
+
+                    break;
+               
+                 
                 }
             }
 
             if (event.type == sf::Event::MouseButtonPressed)
             {
+               std::cout<<sf::Mouse::getPosition().x << sf::Mouse::getPosition().y;
+
+
                 if (sf::Mouse::getPosition().x > 1025 && sf::Mouse::getPosition().x < 1122 && sf::Mouse::getPosition().y > 576 && sf::Mouse::getPosition().y < 672)
                 {
+
                     std::cout << "done" << std::endl;
-                    show = true;
+                    score1=0;
+                    show = 2;
                 }
             }
         }
@@ -303,7 +438,7 @@ int main()
         // I set an arbitrary value as the offset, you'd calculate this based on camera position
         parallaxShader.setUniform("offset", offset += clock.restart().asSeconds() / 2);
 
-        if (show)
+        if (show==2)
         {
 
             g1.move_Enemy();
@@ -312,13 +447,26 @@ int main()
             window.draw(g1.returnme());
             window.draw(g1.return_Enemy());
             window.draw(text);
+           
+            
         }
-        else
+        else if (show==1)
         {
+            window.draw(scoreBackImage);
             window.draw(g1.return_menu());
+           
+
+          
+        }else if(show==3){
+            window.draw(scoreBackImage);
+            window.draw(textchance);         
         }
+    
+
+
         window.display();
     }
     return 0;
 }
 
+// kosari logic launa 

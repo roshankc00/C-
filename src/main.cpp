@@ -14,8 +14,18 @@ class Game : public Menu
 protected:
     sf::Texture scorebackground;
     sf::Sprite scoreBackImage;
+     sf::Music music;
 
 public:
+
+        void setMusic(){
+         if (!music.openFromFile("sounds/background.mp3"))
+        {
+            std::cout << "ERROR ERROR :" << std::endl;
+        }
+        music.play();
+    }
+
     int return_gameChance()
     {
         return chanceturn;
@@ -46,7 +56,7 @@ public:
         {
             std::cout << "Error in loading the page " << std::endl;
         }
-        //  spritemenu.setPosition(0, 0);
+        //  spritechoseImage.setPosition(0, 0);
         scoreBackImage.setTexture(scorebackground);
     }
 
@@ -72,11 +82,13 @@ int main()
     bool showFinalScore = false;
     bool isgameover = false;
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Parallax Example");
+ char chooseImages[5][100] = {"images/playerimages/van.png", "images/playerimages/taxi.png", "images/playerimages/semi_trailer.png", "images/playerimages/pickup_truck.png"};
     window.setVerticalSyncEnabled(true);
 
     // class instance
     Game g1;
-    g1.set_Texture();
+    g1.setMusic();
+    
     g1.create_Enemy();
 
     // here
@@ -125,6 +137,105 @@ int main()
     // background image for the score board
     // setting up the texture
 
+
+
+
+// car choice option starts
+
+
+
+// next and the previous button
+
+
+
+
+  sf::Text previousButtonText("  Previous", fontb, 24);
+    previousButtonText.setFillColor(sf::Color::White);
+    previousButtonText.setPosition(200, 405);
+
+    sf::RectangleShape previousButtonBackground(sf::Vector2f(200, 50));
+   previousButtonBackground.setPosition(200, 405);
+    previousButtonBackground.setFillColor(sf::Color::Black);
+
+
+
+
+    
+
+
+
+ 
+ 
+
+
+
+ 
+
+// next button 
+
+
+
+  sf::Text nextButtonText("  Next", fontb, 24);
+    nextButtonText.setFillColor(sf::Color::White);
+    nextButtonText.setPosition(1450, 405);
+
+    sf::RectangleShape nextButtonBackground(sf::Vector2f(200, 50));
+    nextButtonBackground.setPosition(1400, 400);
+    nextButtonBackground.setFillColor(sf::Color::Black);
+
+
+
+
+
+
+// setting button
+ sf::Text settingButtonText("  Setting! ", fontb, 24);
+    settingButtonText.setFillColor(sf::Color::White);
+    settingButtonText.setPosition(1450, 705);
+
+    sf::RectangleShape settingButtonBackground(sf::Vector2f(200, 50));
+    settingButtonBackground.setFillColor(sf::Color::Black);
+    settingButtonBackground.setPosition(1400, 700);
+    
+   
+
+
+
+//  collideintervalbtn
+ sf::Text collideButtonText("  Continue ", fontb, 24);
+    collideButtonText.setFillColor(sf::Color::White);
+    collideButtonText.setPosition(950, 705);
+
+    sf::RectangleShape collideButtonBackground(sf::Vector2f(200, 50));
+    collideButtonBackground.setFillColor(sf::Color::Black);
+    collideButtonBackground.setPosition(900, 700);
+ 
+
+
+
+
+
+
+
+
+int index=0;
+
+
+
+
+
+
+
+// car choice option logic ends 
+
+
+
+
+
+
+
+
+
     // final score
     sf::Font finalscorefont;
     finalscorefont.loadFromFile("fonts/Real Delight.ttf");
@@ -165,12 +276,46 @@ int main()
     while (window.isOpen())
     {
         sf::Event event;
+
+        
+
         while (window.pollEvent(event))
+
+                           if (event.type == sf::Event::MouseButtonPressed)
+{       
+    std::cout<<"X =" << event.mouseButton.x << std::endl;
+    std::cout<<"Y=" << event.mouseButton.y << std::endl;
+        if(event.mouseButton.x>1408 &&event.mouseButton.x<1596 && event.mouseButton.y>403 &&event.mouseButton.y<443 &&show==4){
+            if(index<3){
+             index++;
+            }else{
+                index=std::size(chooseImages)-2;
+            }
+        }
+        if(event.mouseButton.x>205 &&event.mouseButton.x<379 && event.mouseButton.y>409 &&event.mouseButton.y<451 && show==4){
+        if(index>0){
+        index--;
+        }else{
+            index=0;
+        }
+        }
+        if(event.mouseButton.x>1403 &&event.mouseButton.x<1594 && event.mouseButton.y>701 &&event.mouseButton.y<745 &&show==1){
+            show=4;       
+        }
+        if(event.mouseButton.x>901 &&event.mouseButton.x<1094 && event.mouseButton.y>701 &&event.mouseButton.y<744 &&show==3){
+            show=2;  
+            g1.set_isCollideFalse();
+        }
+
+
+    
+}
+
+
 
             if (g1.return_isCollide() && g1.return_gameChance() < 3 && show != 3)
             {
                 show = 3;
-                std::cout << "wow";
             }
         if (g1.return_gameChance() >= 3)
         {
@@ -188,13 +333,14 @@ int main()
         g1.return_gameChance() >= 3 ? score1 = 0 : score1++;
         sf::Text text("Score :" + std::to_string(score1), font);
 
-        {
 
+        {
             switch (event.type)
             {
             case sf::Event::Closed:
                 window.close();
                 break;
+           
             case sf::Event::KeyPressed:
                 switch (event.key.code)
                 {
@@ -206,17 +352,25 @@ int main()
                     g1.move_right();
                     break;
 
-                case sf::Keyboard::Up:
-                    if (show == 3)
-                    {
-
-                        g1.set_isCollideFalse();
-                        show = 2;
-                    }
-
-                    break;
                 }
+              
+
+
+
+
+
+
             }
+
+  
+
+
+
+
+
+
+
+
 
             if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
             {
@@ -225,14 +379,77 @@ int main()
 
                 if (buttonBackground.getGlobalBounds().contains(mousePosFloat))
                 {
-                    std::cout << "done" << std::endl;
                     showFinalScore = true;
 
                     score1 = 0;
                     show = 2;
                 }
+
+               
+
+
+
+
+
             }
+//  next and the previous
+
+        
+          
+
+
         }
+
+// djfnjdf
+
+
+
+
+
+       sf::Texture texturechoseImage;
+    sf::Sprite spritechoseImage;
+
+        // loading the texture
+        if (!texturechoseImage.loadFromFile(chooseImages[index]))
+        {
+            std::cout << "Error in loading the page " << std::endl;
+        }
+        //  spritechoseImage.setPosition(0, 0);
+        spritechoseImage.setPosition(800,400);
+        spritechoseImage.setTexture(texturechoseImage);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ndhhdf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // I set an arbitrary value as the offset, you'd calculate this based on camera position
         parallaxShader.setUniform("offset", offset += clock.restart().asSeconds() / 1.6);
@@ -241,6 +458,7 @@ int main()
         {
 
             g1.move_Enemy();
+            g1.set_Texture(chooseImages[index]);
             window.draw(sprite, &parallaxShader);
             window.draw(g1.returnme());
             window.draw(g1.return_Enemy());
@@ -249,7 +467,6 @@ int main()
         else if (show == 1)
         {
             window.draw(g1.return_menu());
-            std::cout << finalscore << std::endl;
             if (showFinalScore)
             {
                 sf::Text textchance("\t \t  your score is \n \n \t \t \t \t " + std::to_string(finalscore) + " \n \n click play  to go play again", fontchance);
@@ -261,12 +478,32 @@ int main()
 
             window.draw(buttonBackground);
             window.draw(buttonText);
+
+             window.draw(settingButtonBackground);
+    window.draw(settingButtonText);
         }
         else if (show == 3)
         {
             window.draw(g1.backScoreImage());
 
             window.draw(textchance);
+     window.draw(collideButtonBackground);
+    window.draw(collideButtonText);
+        }else if(show==4)
+        {          
+            
+            window.draw(g1.backScoreImage());
+              window.draw(previousButtonBackground);
+            window.draw(previousButtonText);
+
+            window.draw(spritechoseImage);
+
+              window.draw(nextButtonBackground);
+            window.draw(nextButtonText);
+
+
+            window.draw(buttonBackground);
+            window.draw(buttonText);
         }
 
         window.display();

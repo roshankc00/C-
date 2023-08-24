@@ -12,12 +12,16 @@ protected:
 
 public:
     // set the texture
-    void set_Texture()
-    {
-        if (!music.openFromFile("sounds/background.mp3"))
+
+    void setMusic(){
+         if (!music.openFromFile("sounds/background.mp3"))
         {
             std::cout << "ERROR ERROR :" << std::endl;
         }
+    }
+    void set_Texture(char* name)
+    {
+       
 
         music.play();
 
@@ -25,7 +29,7 @@ public:
         texture.setRepeated(false);
 
         // loading the texture
-        if (!texture.loadFromFile("images/car.png"))
+        if (!texture.loadFromFile(name))
         {
             std::cout << "Error in loading the page " << std::endl;
         }

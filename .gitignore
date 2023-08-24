@@ -1,0 +1,8 @@
+
+*.o
+*.cbp
+*.log
+*.exe
+
+
+build/

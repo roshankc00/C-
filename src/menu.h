@@ -20,6 +20,7 @@ public:
 
         // setting up the texture
         texturemenu.setRepeated(true);
+    
 
         // loading the texture
         if (!texturemenu.loadFromFile("images/lalalal.jpg"))
